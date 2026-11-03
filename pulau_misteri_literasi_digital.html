@@ -1,0 +1,850 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Petualangan Pulau Misteri: Pahlawan Literasi Digital</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <!-- FontAwesome Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <!-- Google Fonts: Fredoka & Outfit -->
+    <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@400;600;700&family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body {
+            font-family: 'Fredoka', cursive, sans-serif;
+            background-color: #0f172a;
+            color: #f8fafc;
+            user-select: none;
+            -webkit-user-select: none;
+        }
+        .font-outfit {
+            font-family: 'Outfit', sans-serif;
+        }
+        .island-bg {
+            background: linear-gradient(180deg, #1e293b 0%, #0f172a 100%);
+        }
+        .custom-glow {
+            box-shadow: 0 0 20px rgba(56, 189, 248, 0.4);
+        }
+        .bounce-gentle {
+            animation: bounce 2s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-8px); }
+        }
+        .pulse-glow {
+            animation: pulseGlow 1.5s infinite alternate;
+        }
+        @keyframes pulseGlow {
+            0% { box-shadow: 0 0 10px rgba(234, 179, 8, 0.4); }
+            100% { box-shadow: 0 0 25px rgba(234, 179, 8, 0.9); }
+        }
+        /* Custom scrollbar */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: #1e293b;
+        }
+        ::-webkit-scrollbar-thumb {
+            background: #38bdf8;
+            border-radius: 4px;
+        }
+    </style>
+</head>
+<body class="min-h-screen flex flex-col justify-between overflow-x-hidden">
+
+    <!-- TOP AUDIO CONTROL & HEADER -->
+    <header class="w-full bg-slate-900/80 backdrop-blur-md border-b border-slate-700/50 p-4 sticky top-0 z-50">
+        <div class="max-w-5xl mx-auto flex justify-between items-center">
+            <div class="flex items-center space-x-3">
+                <span class="text-3xl">🏝️</span>
+                <div>
+                    <h1 class="text-xl md:text-2xl font-bold bg-gradient-to-r from-amber-400 via-emerald-400 to-sky-400 bg-clip-text text-transparent">
+                        Pulau Literasi Digital
+                    </h1>
+                    <p class="text-xs text-slate-400 font-outfit hidden sm:block">Petualangan Edukasi Kelas V SD</p>
+                </div>
+            </div>
+
+            <!-- Stats Bar -->
+            <div id="stats-container" class="flex items-center space-x-4 bg-slate-800/90 px-4 py-2 rounded-full border border-slate-700">
+                <div class="flex items-center space-x-1" title="Nyawa">
+                    <span class="text-red-500 text-lg">❤️</span>
+                    <span id="lives-count" class="font-bold text-lg text-red-400">3</span>
+                </div>
+                <div class="w-px h-5 bg-slate-700"></div>
+                <div class="flex items-center space-x-1" title="Koin">
+                    <span class="text-amber-400 text-lg">🪙</span>
+                    <span id="coins-count" class="font-bold text-lg text-amber-300">0</span>
+                </div>
+                <div class="w-px h-5 bg-slate-700"></div>
+                <button id="audio-toggle" onclick="toggleAudio()" class="text-slate-300 hover:text-sky-400 transition p-1">
+                    <i id="audio-icon" class="fas fa-volume-up text-lg"></i>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- MAIN GAME CONTAINER -->
+    <main class="max-w-5xl w-full mx-auto p-4 flex-grow flex flex-col justify-center">
+
+        <!-- SCREEN 1: WELCOME / START SCREEN -->
+        <section id="screen-start" class="text-center py-8 px-4 flex flex-col items-center">
+            <div class="relative mb-6">
+                <div class="w-32 h-32 md:w-40 md:h-40 rounded-full bg-sky-500/20 flex items-center justify-center text-7xl md:text-8xl bounce-gentle border-4 border-sky-400 shadow-xl shadow-sky-500/20">
+                    🧭
+                </div>
+                <span class="absolute -bottom-2 -right-2 bg-amber-500 text-slate-950 font-bold px-3 py-1 rounded-full text-xs shadow-lg uppercase">Kelas V SD</span>
+            </div>
+
+            <h2 class="text-3xl md:text-5xl font-extrabold mb-4 text-white tracking-wide">
+                Jadilah <span class="text-amber-400">Pahlawan Digital</span>!
+            </h2>
+            <p class="max-w-xl text-slate-300 font-outfit text-base md:text-lg mb-8 leading-relaxed">
+                Jelajahi 5 Zona Misteri di Pulau Digital. Jawab 20 tantangan untuk mengalahkan bahaya Hoax, Penipuan Online, dan Cyberbullying!
+            </p>
+
+            <!-- AVATAR SELECTION -->
+            <div class="mb-8 w-full max-w-md bg-slate-800/80 p-5 rounded-2xl border border-slate-700">
+                <label class="block text-slate-300 text-sm font-semibold mb-3">Pilih Avatar Petualangmu:</label>
+                <div class="grid grid-cols-4 gap-3">
+                    <button onclick="selectAvatar('🧑‍🌾')" class="avatar-btn p-3 text-3xl rounded-xl border-2 border-slate-700 hover:border-amber-400 bg-slate-900/50 transition">🧑‍🌾</button>
+                    <button onclick="selectAvatar('🕵️‍♀️')" class="avatar-btn p-3 text-3xl rounded-xl border-2 border-slate-700 hover:border-amber-400 bg-slate-900/50 transition">🕵️‍♀️</button>
+                    <button onclick="selectAvatar('🧙‍♂️')" class="avatar-btn p-3 text-3xl rounded-xl border-2 border-slate-700 hover:border-amber-400 bg-slate-900/50 transition">🧙‍♂️</button>
+                    <button onclick="selectAvatar('👩‍🚀')" class="avatar-btn p-3 text-3xl rounded-xl border-2 border-slate-700 hover:border-amber-400 bg-slate-900/50 transition">👩‍🚀</button>
+                </div>
+            </div>
+
+            <button onclick="startGame()" class="px-8 py-4 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold text-xl rounded-2xl shadow-lg shadow-emerald-500/30 transform hover:-translate-y-1 active:translate-y-0 transition flex items-center space-x-3 pulse-glow">
+                <span>Mulai Petualangan</span>
+                <i class="fas fa-play text-sm"></i>
+            </button>
+        </section>
+
+        <!-- SCREEN 2: MAP SELECTION (5 ZONES) -->
+        <section id="screen-map" class="hidden py-4">
+            <div class="text-center mb-6">
+                <h2 class="text-2xl md:text-3xl font-bold text-amber-400">Peta Pulau Misteri</h2>
+                <p class="text-slate-400 font-outfit text-sm">Selesaikan zona secara berurutan untuk mencapai Puncak Pengamanan!</p>
+            </div>
+
+            <!-- Island Map Visual Grid -->
+            <div class="grid grid-cols-1 md:grid-cols-5 gap-4 relative my-6">
+
+                <!-- Zone 1 -->
+                <div id="zone-card-0" onclick="enterZone(0)" class="zone-card bg-slate-800/90 rounded-2xl p-5 border-2 border-sky-500 shadow-lg cursor-pointer hover:scale-105 transition duration-300 flex flex-col justify-between items-center text-center">
+                    <div class="w-16 h-16 rounded-full bg-sky-500/20 border border-sky-400 flex items-center justify-center text-3xl mb-3">
+                        🏖️
+                    </div>
+                    <span class="text-xs font-bold text-sky-400 uppercase tracking-wider mb-1">Zona 1</span>
+                    <h3 class="font-bold text-lg text-white mb-2">Pantai Berita</h3>
+                    <p class="text-xs text-slate-400 font-outfit mb-4">Cek Fakta & Saring Hoax</p>
+                    <span class="status-badge px-3 py-1 bg-sky-500/20 text-sky-300 rounded-full text-xs font-semibold border border-sky-500/30">Siap Penjelajahan</span>
+                </div>
+
+                <!-- Zone 2 -->
+                <div id="zone-card-1" onclick="enterZone(1)" class="zone-card bg-slate-900/60 opacity-60 rounded-2xl p-5 border-2 border-slate-700 shadow-lg cursor-not-allowed transition duration-300 flex flex-col justify-between items-center text-center">
+                    <div class="w-16 h-16 rounded-full bg-emerald-500/20 border border-emerald-400/30 flex items-center justify-center text-3xl mb-3">
+                        🌲
+                    </div>
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Zona 2</span>
+                    <h3 class="font-bold text-lg text-white mb-2">Hutan Kata Sandi</h3>
+                    <p class="text-xs text-slate-400 font-outfit mb-4">Keamanan Akun Strong</p>
+                    <span class="status-badge px-3 py-1 bg-slate-800 text-slate-400 rounded-full text-xs font-semibold"><i class="fas fa-lock mr-1"></i> Terkunci</span>
+                </div>
+
+                <!-- Zone 3 -->
+                <div id="zone-card-2" onclick="enterZone(2)" class="zone-card bg-slate-900/60 opacity-60 rounded-2xl p-5 border-2 border-slate-700 shadow-lg cursor-not-allowed transition duration-300 flex flex-col justify-between items-center text-center">
+                    <div class="w-16 h-16 rounded-full bg-purple-500/20 border border-purple-400/30 flex items-center justify-center text-3xl mb-3">
+                        🦇
+                    </div>
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Zona 3</span>
+                    <h3 class="font-bold text-lg text-white mb-2">Gua Privasi</h3>
+                    <p class="text-xs text-slate-400 font-outfit mb-4">Lindungi Data Pribadi</p>
+                    <span class="status-badge px-3 py-1 bg-slate-800 text-slate-400 rounded-full text-xs font-semibold"><i class="fas fa-lock mr-1"></i> Terkunci</span>
+                </div>
+
+                <!-- Zone 4 -->
+                <div id="zone-card-3" onclick="enterZone(3)" class="zone-card bg-slate-900/60 opacity-60 rounded-2xl p-5 border-2 border-slate-700 shadow-lg cursor-not-allowed transition duration-300 flex flex-col justify-between items-center text-center">
+                    <div class="w-16 h-16 rounded-full bg-amber-500/20 border border-amber-400/30 flex items-center justify-center text-3xl mb-3">
+                        🏛️
+                    </div>
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Zona 4</span>
+                    <h3 class="font-bold text-lg text-white mb-2">Kuil Netiket</h3>
+                    <p class="text-xs text-slate-400 font-outfit mb-4">Etika & Anti Bullying</p>
+                    <span class="status-badge px-3 py-1 bg-slate-800 text-slate-400 rounded-full text-xs font-semibold"><i class="fas fa-lock mr-1"></i> Terkunci</span>
+                </div>
+
+                <!-- Zone 5 -->
+                <div id="zone-card-4" onclick="enterZone(4)" class="zone-card bg-slate-900/60 opacity-60 rounded-2xl p-5 border-2 border-slate-700 shadow-lg cursor-not-allowed transition duration-300 flex flex-col justify-between items-center text-center">
+                    <div class="w-16 h-16 rounded-full bg-red-500/20 border border-red-400/30 flex items-center justify-center text-3xl mb-3">
+                        🌋
+                    </div>
+                    <span class="text-xs font-bold text-slate-400 uppercase tracking-wider mb-1">Zona 5</span>
+                    <h3 class="font-bold text-lg text-white mb-2">Puncak Pengamanan</h3>
+                    <p class="text-xs text-slate-400 font-outfit mb-4">Phishing & Penggunaan Bijak</p>
+                    <span class="status-badge px-3 py-1 bg-slate-800 text-slate-400 rounded-full text-xs font-semibold"><i class="fas fa-lock mr-1"></i> Terkunci</span>
+                </div>
+
+            </div>
+        </section>
+
+        <!-- SCREEN 3: QUIZ QUESTION SCREEN -->
+        <section id="screen-quiz" class="hidden py-4 max-w-2xl mx-auto w-full">
+            <!-- Progress Top -->
+            <div class="flex justify-between items-center mb-3">
+                <span id="zone-title" class="text-sm font-bold text-amber-400 flex items-center">
+                    <i class="fas fa-map-marker-alt mr-2"></i> Zona 1: Pantai Berita
+                </span>
+                <span id="question-progress" class="text-xs font-outfit bg-slate-800 px-3 py-1 rounded-full text-slate-300 border border-slate-700">
+                    Soal 1 dari 20
+                </span>
+            </div>
+
+            <!-- Question Card -->
+            <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-6 shadow-2xl relative">
+                <!-- Question Text -->
+                <h3 id="question-text" class="text-lg md:text-xl font-bold text-white mb-6 leading-relaxed">
+                    Pertanyaan akan muncul di sini...
+                </h3>
+
+                <!-- Options Grid -->
+                <div id="options-container" class="space-y-3 font-outfit">
+                    <!-- Dynamic Options -->
+                </div>
+
+                <!-- Feedback Drawer -->
+                <div id="feedback-box" class="hidden mt-6 p-4 rounded-xl border flex flex-col space-y-2">
+                    <div class="flex items-center space-x-2 font-bold text-base" id="feedback-title">
+                        <!-- Correct/Incorrect text -->
+                    </div>
+                    <p id="feedback-text" class="text-sm font-outfit leading-relaxed">
+                        <!-- Explanation text -->
+                    </p>
+                    <button id="next-btn" onclick="nextQuestion()" class="mt-3 self-end px-5 py-2 bg-sky-500 hover:bg-sky-400 text-slate-950 font-bold rounded-lg text-sm transition">
+                        Lanjut <i class="fas fa-arrow-right ml-1"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+
+        <!-- SCREEN 4: GAME OVER / RESULT -->
+        <section id="screen-result" class="hidden text-center py-8 px-4 flex flex-col items-center">
+            <div id="result-icon" class="text-7xl mb-4">🏆</div>
+            <h2 id="result-title" class="text-3xl md:text-4xl font-extrabold text-white mb-2">Selamat! Kamu Tamat!</h2>
+            <p id="result-subtitle" class="text-slate-300 font-outfit mb-6">Kamu telah menaklukkan Pulau Literasi Digital!</p>
+
+            <!-- Score Summary Card -->
+            <div class="bg-slate-800/90 border border-slate-700 rounded-2xl p-6 w-full max-w-md mb-6 space-y-4">
+                <div class="flex justify-between items-center py-2 border-b border-slate-700">
+                    <span class="text-slate-400 font-outfit">Skor Akhir:</span>
+                    <span id="final-score" class="text-2xl font-bold text-amber-400">0</span>
+                </div>
+                <div class="flex justify-between items-center py-2 border-b border-slate-700">
+                    <span class="text-slate-400 font-outfit">Jawaban Benar:</span>
+                    <span id="final-correct" class="text-xl font-bold text-emerald-400">0 / 20</span>
+                </div>
+                <div class="flex justify-between items-center py-2">
+                    <span class="text-slate-400 font-outfit">Gelar Lencana:</span>
+                    <span id="badge-title" class="text-lg font-bold text-sky-400">Pahlawan Digital Muda</span>
+                </div>
+            </div>
+
+            <!-- Action Buttons -->
+            <div class="flex flex-wrap justify-center gap-4">
+                <button onclick="restartGame()" class="px-6 py-3 bg-gradient-to-r from-emerald-500 to-teal-600 hover:from-emerald-400 hover:to-teal-500 text-white font-bold rounded-xl shadow-lg transition">
+                    <i class="fas fa-redo mr-2"></i>Main Lagi
+                </button>
+            </div>
+        </section>
+
+    </main>
+
+    <!-- FOOTER / EDUCATIONAL NOTE -->
+    <footer class="w-full bg-slate-900 border-t border-slate-800 p-4 text-center text-xs text-slate-500 font-outfit">
+        Game Edukasi Literasi Digital SD Kelas V • Dikembangkan untuk Pembelajaran Interaktif
+    </footer>
+
+    <!-- JAVASCRIPT LOGIC -->
+    <script>
+        /* ==========================================
+           1. GAME STATE & DATA QUESTION BANK (20 SOAL)
+           ========================================== */
+        const zones = [
+            { id: 0, name: "Pantai Berita", icon: "🏖️", questionsRange: [0, 3] },
+            { id: 1, name: "Hutan Kata Sandi", icon: "🌲", questionsRange: [4, 7] },
+            { id: 2, name: "Gua Privasi", icon: "🦇", questionsRange: [8, 11] },
+            { id: 3, name: "Kuil Netiket", icon: "🏛️", questionsRange: [12, 15] },
+            { id: 4, name: "Puncak Pengamanan", icon: "🌋", questionsRange: [16, 19] }
+        ];
+
+        const questionsData = [
+            // ZONA 1: PANTAI BERITA (Soal 1-4)
+            {
+                zone: 0,
+                question: "1. Kamu menerima pesan di HP yang bilang kamu menang hadiah 100 juta rupiah, padahal kamu tidak pernah ikut lomba. Apa yang harus kamu lakukan?",
+                options: [
+                    "A. Langsung percaya dan membalas pesan tersebut.",
+                    "B. Abaikan dan ceritakan kepada orang tua atau guru.",
+                    "C. Menyebarkan berita gembira itu ke semua grup WhatsApp teman.",
+                    "D. Mengirimkan uang untuk mengambil hadiah."
+                ],
+                correct: 1,
+                explanation: "Benar! Pesan hadiah tanpa pernah ikut lomba adalah bentuk Hoax/Penipuan. Jangan pernah mudah percaya dan selalu beri tahu orang tua!"
+            },
+            {
+                zone: 0,
+                question: "2. Judul berita yang provokatif dan menghebohkan biasanya dibuat untuk memancing orang mengklik tanpa membaca. Berita jenis ini sering disebut...",
+                options: [
+                    "A. Clickbait / Berita Umpan Klik",
+                    "B. Berita Resmi Sekolah",
+                    "C. Ensiklopedia",
+                    "D. Cerita Dongeng"
+                ],
+                correct: 0,
+                explanation: "Benar! Clickbait adalah judul heboh yang sering kali leads ke kabar bohong atau berita palsu. Selalu baca isi secara teliti!"
+            },
+            {
+                zone: 0,
+                question: "3. Sebelum kamu membagikan (share) sebuah artikel atau kabar di media sosial, langkah paling bijak adalah...",
+                options: [
+                    "A. Saring dulu kebenarannya sebelum disaring (Saring sebelum Sharing).",
+                    "B. Langsung membagikan agar jadi yang pertama tahu.",
+                    "C. Mengubah judulnya jadi lebih seram.",
+                    "D. Menyuruh semua teman membagikannya juga."
+                ],
+                correct: 0,
+                explanation: "Tepat sekali! 'Saring sebelum Sharing' artinya memeriksa apakah informasi tersebut benar dan bermanfaat sebelum dibagikan."
+            },
+            {
+                zone: 0,
+                question: "4. Di mana tempat terbaik untuk memeriksa kebenaran sebuah informasi berita resmi?",
+                options: [
+                    "A. Status media sosial akun tak dikenal.",
+                    "B. Situs web resmi pemerintah atau media berita terpercaya.",
+                    "C. Komentar netizen di internet.",
+                    "D. Pesan berantai di grup obrolan."
+                ],
+                correct: 1,
+                explanation: "Hebat! Situs berita terpercaya dan kredibel memeriksa fakta terlebih dahulu sebelum menerbitkan berita."
+            },
+
+            // ZONA 2: HUTAN KATA SANDI (Soal 5-8)
+            {
+                zone: 1,
+                question: "5. Manakah di bawah ini contoh Kata Sandi (Password) yang PALING KUAT dan aman?",
+                options: [
+                    "A. 12345678",
+                    "B. namaku123",
+                    "C. P3tul4ngan#2026",
+                    "D. tanggallahir"
+                ],
+                correct: 2,
+                explanation: "Benar! Kata sandi yang kuat terdiri dari kombinasi huruf besar, huruf kecil, angka, dan simbol unik!"
+            },
+            {
+                zone: 1,
+                question: "6. Teman sebangkumu ingin meminjam akun game milikmu dan meminta kata sandimu. Sikap yang tepat adalah...",
+                options: [
+                    "A. Memberikannya karena dia teman baik.",
+                    "B. Menolak dengan santun dan tidak memberitahu kata sandi ke siapa pun kecuali orang tua.",
+                    "C. Menuliskan kata sandi di papan tulis kelas.",
+                    "D. Memberikan kata sandi tetapi minta imbalan uang."
+                ],
+                correct: 1,
+                explanation: "Benar! Kata sandi adalah rahasia pribadi. Jangan berikan ke siapapun termasuk teman dekat, agar akunmu tidak disalahgunakan."
+            },
+            {
+                zone: 1,
+                question: "7. Mengapa kita TIDAK boleh menggunakan kata sandi '123456' untuk akun sekolah atau game kita?",
+                options: [
+                    "A. Karena terlalu panjang.",
+                    "B. Karena sangat mudah ditebak dan diretas oleh peretas (hacker).",
+                    "C. Karena kata sandi itu sangat bagus.",
+                    "D. Karena sulit diingat."
+                ],
+                correct: 1,
+                explanation: "Tepat! Urutan angka sederhana adalah kata sandi pertama yang akan dicoba oleh peretas untuk membobol akun."
+            },
+            {
+                zone: 1,
+                question: "8. Jika kamu merasa akun media sosial atau akun belajarmu dihack/diakses orang lain, hal pertama yang harus dilakukan adalah...",
+                options: [
+                    "A. Menangis dan merusakkan HP.",
+                    "B. Segera ubah kata sandi dan minta bantuan orang tua atau guru.",
+                    "C. Membiarkannya saja.",
+                    "D. Membuat akun baru tanpa mengamankan akun lama."
+                ],
+                correct: 1,
+                explanation: "Pintar! Mengubah kata sandi secara cepat dapat mengunci kembali akunmu dari akses orang jahat."
+            },
+
+            // ZONA 3: GUA PRIVASI (Soal 9-12)
+            {
+                zone: 2,
+                question: "9. Informasi berikut ini tergolong DATA PRIBADI RAHASIA yang TIDAK boleh disebar di internet, KECUALI...",
+                options: [
+                    "A. Alamat rumah dan nomor HP orang tua.",
+                    "B. Hobi favorit seperti membaca atau main sepak bola.",
+                    "C. Nomor Induk Kependudukan (NIK) / Kartu Keluarga.",
+                    "D. Nama kandung ibu dan lokasi sekolah."
+                ],
+                correct: 1,
+                explanation: "Benar! Hobi adalah informasi umum yang aman bagikan, sedangkan alamat, No HP, dan NIK adalah data pribadi rahasia."
+            },
+            {
+                zone: 2,
+                question: "10. Seseorang yang tidak kamu kenal di internet meminta foto rumah dan lokasi keberadaanmu saat ini. Kamu harus...",
+                options: [
+                    "A. Mengirimkannya langsung agar mendapat teman baru.",
+                    "B. Menolak, memblokir akun tersebut, dan melapor ke orang tua.",
+                    "C. Mengirimkan foto orang lain.",
+                    "D. Mengajaknya bertemu langsung di tempat sepi."
+                ],
+                correct: 1,
+                explanation: "Hebat! Orang asing di internet belum tentu berniat baik. Jangan pernah bagikan lokasi live atau foto privasi!"
+            },
+            {
+                zone: 2,
+                question: "11. Apa bahayanya jika kita mengunggah (post) foto teman yang sedang malu/terjatuh tanpa izinnya?",
+                options: [
+                    "A. Teman akan merasa senang.",
+                    "B. Dapat merusak reputasi teman dan melanggar hak privasinya.",
+                    "C. Membuat kita makin populer tanpa masalah.",
+                    "D. Menguntungkan semua orang."
+                ],
+                correct: 1,
+                explanation: "Tepat! Menghormati privasi orang lain berarti tidak mengunggah foto mereka tanpa persetujuan."
+            },
+            {
+                zone: 2,
+                question: "12. Rekam jejak digital adalah sisa jejak kegiatan yang kita tinggalkan di internet. Sifat rekam jejak digital ini adalah...",
+                options: [
+                    "A. Akan hilang otomatis dalam 5 menit.",
+                    "B. Sulit dihapus dan bisa dilihat dalam waktu yang sangat lama.",
+                    "C. Tidak pernah tersimpan di internet.",
+                    "D. Hanya bisa dilihat oleh diri sendiri."
+                ],
+                correct: 1,
+                explanation: "Benar! Apa yang kamu unggah di internet bisa tersimpan selamanya. Berperilakulah yang baik di dunia maya!"
+            },
+
+            // ZONA 4: KUIL ETIKA NETIKET (Soal 13-16)
+            {
+                zone: 3,
+                question: "13. Apa yang dimaksud dengan istilah 'Netiket' dalam dunia digital?",
+                options: [
+                    "A. Etika dan sopan santun dalam berkomunikasi di internet.",
+                    "B. Membeli tiket kereta secara online.",
+                    "C. Cara merakit komputer baru.",
+                    "D. Aturan bermain sepak bola."
+                ],
+                correct: 0,
+                explanation: "Benar! Netiket singkatan dari Network Etiquette, yaitu tata krama dan kesopanan saat berinteraksi di dunia maya."
+            },
+            {
+                zone: 3,
+                question: "14. Di kolom komentar media sosial, kamu melihat seseorang mengejek fisik temanmu (Cyberbullying). Tindakanmu yang benar adalah...",
+                options: [
+                    "A. Ikut-ikutan mengejek agar ramai.",
+                    "B. Tidak ikut membully, beri dukungan ke teman, dan laporkan (report) komentar jahat tersebut.",
+                    "C. Tertawa di kolom komentar.",
+                    "D. Menyebarkan ejekan itu ke grup lain."
+                ],
+                correct: 1,
+                explanation: "Luar biasa! Pahlawan Digital melawan perundungan siber (cyberbullying) dengan tidak ikut mengejek dan melaporkan konten negatif."
+            },
+            {
+                zone: 3,
+                question: "15. Menulis pesan internet menggunakan HURUF KAPITAL SEMUA (CONTOHNYA SEPERTI INI) sering diartikan sebagai...",
+                options: [
+                    "A. Berbicara dengan lembut.",
+                    "B. Berteriak atau marah kepada penerima pesan.",
+                    "C. Tulisan yang sangat indah.",
+                    "D. Tanda berbisik-bisik."
+                ],
+                correct: 1,
+                explanation: "Benar! Dalam etika internet, memakai huruf kapital semua dianggap sama seperti berteriak dengan nada marah."
+            },
+            {
+                zone: 3,
+                question: "16. Jika terjadi perbedaan pendapat dengan teman di grup obrolan kelas, cara menyelesaikannya yang santun adalah...",
+                options: [
+                    "A. Mengeluarkan teman dari grup.",
+                    "B. Menggunakan kata-kata kasar.",
+                    "C. Berdiskusi dengan kepala dingin dan saling menghargai pendapat.",
+                    "D. Memblokir semua anggota grup."
+                ],
+                correct: 2,
+                explanation: "Tepat! Selalu utamakan tutur kata yang sopan dan saling menghargai meskipun berbeda pendapat."
+            },
+
+            // ZONA 5: PUNCAK PENGAMANAN (Soal 17-20)
+            {
+                zone: 4,
+                question: "17. Kamu menerima link/tautan tidak dikenal yang menyuruh kamu klik untuk instal game gratis. Bahaya yang mungkin terjadi adalah...",
+                options: [
+                    "A. HP bisa terkena virus atau Phishing (pencurian data).",
+                    "B. HP langsung menjadi baru.",
+                    "C. Tidak ada risiko apa pun.",
+                    "D. Baterai HP jadi hemat."
+                ],
+                correct: 0,
+                explanation: "Benar! Link mencurigakan sering kali berisi malware/virus atau jebakan phishing untuk mencuri data pribadi."
+            },
+            {
+                zone: 3,
+                question: "18. Saat menginstal aplikasi baru, aplikasi tersebut meminta izin mengunduh seluruh kontak dan lokasi padahal cuma aplikasi kalkulator. Apa yang harus dilakukan?",
+                options: [
+                    "A. Izinkan saja semua permintaan.",
+                    "B. Tolak izin yang tidak relevan atau hapus aplikasi yang mencurigakan.",
+                    "C. Langsung membagikan aplikasi ke teman.",
+                    "D. Mengabaikan perinatan."
+                ],
+                correct: 1,
+                explanation: "Pintar! Periksa selalu izin (permission) aplikasi. Kalkulator tidak membutuhkan izin akses lokasi atau kontak HP-mu."
+            },
+            {
+                zone: 4,
+                question: "19. Batas waktu penggunaan HP/Screen Time yang sehat bagi anak-anak agar mata dan tubuh tetap sehat adalah...",
+                options: [
+                    "A. Main game 12 jam tanpa berhenti.",
+                    "B. Membatasi waktu layar dan menyelingi dengan istirahat/olahraga.",
+                    "C. Bermain HP sambil tiduran di kamar gelap semalaman.",
+                    "D. Tidak belajar sama sekali."
+                ],
+                correct: 1,
+                explanation: "Sangat baik! Penggunaan gadget yang bijak berarti dapat mengatur waktu dengan seimbang antara dunia digital dan dunia nyata."
+            },
+            {
+                zone: 4,
+                question: "20. Siapakah pihak utama yang harus kamu hubungi jika menemukan hal aneh, menakutkan, atau mencurigakan di internet?",
+                options: [
+                    "A. Orang asing di obrolan game.",
+                    "B. Orang tua atau Guru di sekolah.",
+                    "C. Memendamnya sendiri.",
+                    "D. Akun robot bodoh."
+                ],
+                correct: 1,
+                explanation: "100% Benar! Orang tua dan guru adalah pelindung utamamu yang akan membantu memecahkan masalah keamanan digital."
+            }
+        ];
+
+        // GAME STATE VARIABLE
+        let selectedAvatar = '🧑‍🌾';
+        let currentZoneIndex = 0;
+        let currentQuestionIndex = 0;
+        let lives = 3;
+        let coins = 0;
+        let unlockedZones = [true, false, false, false, false];
+        let soundEnabled = true;
+
+        /* ==========================================
+           2. WEB AUDIO API (SYNTHESIZER SOUND EFFECTS)
+           ========================================== */
+        let audioCtx = null;
+
+        function initAudio() {
+            if (!audioCtx) {
+                audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+            }
+        }
+
+        function playSound(type) {
+            if (!soundEnabled) return;
+            try {
+                initAudio();
+                if (audioCtx.state === 'suspended') {
+                    audioCtx.resume();
+                }
+
+                const osc = audioCtx.createOscillator();
+                const gain = audioCtx.createGain();
+                osc.connect(gain);
+                gain.connect(audioCtx.destination);
+
+                const now = audioCtx.currentTime;
+
+                if (type === 'correct') {
+                    // Chime Success
+                    osc.type = 'triangle';
+                    osc.frequency.setValueAtTime(523.25, now); // C5
+                    osc.frequency.exponentialRampToValueAtTime(659.25, now + 0.1); // E5
+                    osc.frequency.exponentialRampToValueAtTime(783.99, now + 0.2); // G5
+                    gain.gain.setValueAtTime(0.2, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.35);
+                    osc.start(now);
+                    osc.stop(now + 0.35);
+                } else if (type === 'wrong') {
+                    // Buzz Fail
+                    osc.type = 'sawtooth';
+                    osc.frequency.setValueAtTime(180, now);
+                    osc.frequency.linearRampToValueAtTime(110, now + 0.25);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.3);
+                    osc.start(now);
+                    osc.stop(now + 0.3);
+                } else if (type === 'click') {
+                    // Short Click
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(400, now);
+                    gain.gain.setValueAtTime(0.1, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.05);
+                    osc.start(now);
+                    osc.stop(now + 0.05);
+                } else if (type === 'win') {
+                    // Fanfare
+                    osc.type = 'sine';
+                    osc.frequency.setValueAtTime(440, now);
+                    osc.frequency.setValueAtTime(554.37, now + 0.1);
+                    osc.frequency.setValueAtTime(659.25, now + 0.2);
+                    osc.frequency.setValueAtTime(880, now + 0.3);
+                    gain.gain.setValueAtTime(0.3, now);
+                    gain.gain.exponentialRampToValueAtTime(0.01, now + 0.6);
+                    osc.start(now);
+                    osc.stop(now + 0.6);
+                }
+            } catch (e) {
+                console.log("Audio not supported or blocked", e);
+            }
+        }
+
+        function toggleAudio() {
+            soundEnabled = !soundEnabled;
+            const icon = document.getElementById('audio-icon');
+            if (soundEnabled) {
+                icon.className = 'fas fa-volume-up text-lg text-sky-400';
+                playSound('click');
+            } else {
+                icon.className = 'fas fa-volume-mute text-lg text-slate-500';
+            }
+        }
+
+        /* ==========================================
+           3. NAVIGATION & UI LOGIC
+           ========================================== */
+
+        function selectAvatar(emoji) {
+            selectedAvatar = emoji;
+            playSound('click');
+            document.querySelectorAll('.avatar-btn').forEach(btn => {
+                if (btn.innerText.includes(emoji)) {
+                    btn.classList.add('border-amber-400', 'bg-amber-500/20');
+                } else {
+                    btn.classList.remove('border-amber-400', 'bg-amber-500/20');
+                }
+            });
+        }
+
+        function showScreen(screenId) {
+            document.getElementById('screen-start').classList.add('hidden');
+            document.getElementById('screen-map').classList.add('hidden');
+            document.getElementById('screen-quiz').classList.add('hidden');
+            document.getElementById('screen-result').classList.add('hidden');
+
+            document.getElementById(screenId).classList.remove('hidden');
+        }
+
+        function startGame() {
+            playSound('click');
+            lives = 3;
+            coins = 0;
+            currentZoneIndex = 0;
+            currentQuestionIndex = 0;
+            unlockedZones = [true, false, false, false, false];
+
+            updateStats();
+            renderMap();
+            showScreen('screen-map');
+        }
+
+        function updateStats() {
+            document.getElementById('lives-count').innerText = lives;
+            document.getElementById('coins-count').innerText = coins;
+        }
+
+        function renderMap() {
+            zones.forEach((zone, index) => {
+                const card = document.getElementById(`zone-card-${index}`);
+                const statusBadge = card.querySelector('.status-badge');
+
+                if (unlockedZones[index]) {
+                    card.classList.remove('opacity-60', 'cursor-not-allowed', 'border-slate-700');
+                    card.classList.add('cursor-pointer', 'hover:scale-105', 'border-amber-400');
+                    
+                    if (index === currentZoneIndex) {
+                        statusBadge.className = 'status-badge px-3 py-1 bg-amber-500/20 text-amber-300 rounded-full text-xs font-semibold border border-amber-500/40 pulse-glow';
+                        statusBadge.innerHTML = '⚡ Zona Aktif';
+                    } else {
+                        statusBadge.className = 'status-badge px-3 py-1 bg-emerald-500/20 text-emerald-300 rounded-full text-xs font-semibold';
+                        statusBadge.innerHTML = '✓ Terbuka';
+                    }
+                } else {
+                    card.classList.add('opacity-60', 'cursor-not-allowed', 'border-slate-700');
+                    card.classList.remove('cursor-pointer', 'hover:scale-105', 'border-amber-400');
+                    statusBadge.className = 'status-badge px-3 py-1 bg-slate-800 text-slate-400 rounded-full text-xs font-semibold';
+                    statusBadge.innerHTML = '<i class="fas fa-lock mr-1"></i> Terkunci';
+                }
+            });
+        }
+
+        function enterZone(zoneIdx) {
+            if (!unlockedZones[zoneIdx]) {
+                playSound('wrong');
+                return;
+            }
+
+            playSound('click');
+            currentZoneIndex = zoneIdx;
+            // set question index to start of zone
+            currentQuestionIndex = zones[zoneIdx].questionsRange[0];
+            loadQuestion(currentQuestionIndex);
+            showScreen('screen-quiz');
+        }
+
+        function loadQuestion(qIndex) {
+            const q = questionsData[qIndex];
+            const zone = zones[q.zone];
+
+            document.getElementById('zone-title').innerHTML = `<span class="mr-2">${zone.icon}</span> Zona ${zone.id + 1}: ${zone.name}`;
+            document.getElementById('question-progress').innerText = `Soal ${qIndex + 1} dari ${questionsData.length}`;
+            document.getElementById('question-text').innerText = q.question;
+
+            // Render options
+            const optionsContainer = document.getElementById('options-container');
+            optionsContainer.innerHTML = '';
+
+            q.options.forEach((optText, optIdx) => {
+                const btn = document.createElement('button');
+                btn.className = 'w-full text-left p-4 rounded-xl border border-slate-700 bg-slate-900/60 hover:bg-slate-700/60 hover:border-sky-400 transition flex items-center justify-between text-slate-200 text-sm md:text-base font-outfit cursor-pointer';
+                btn.innerHTML = `<span>${optText}</span> <i class="fas fa-chevron-right text-xs opacity-0 group-hover:opacity-100"></i>`;
+                btn.onclick = () => checkAnswer(optIdx, btn);
+                optionsContainer.appendChild(btn);
+            });
+
+            // Reset feedback drawer
+            const feedbackBox = document.getElementById('feedback-box');
+            feedbackBox.classList.add('hidden');
+        }
+
+        function checkAnswer(selectedIndex, btnElement) {
+            const q = questionsData[currentQuestionIndex];
+            const optionsButtons = document.querySelectorAll('#options-container button');
+            
+            // Disable all option buttons
+            optionsButtons.forEach(b => b.disabled = true);
+
+            const feedbackBox = document.getElementById('feedback-box');
+            const feedbackTitle = document.getElementById('feedback-title');
+            const feedbackText = document.getElementById('feedback-text');
+
+            if (selectedIndex === q.correct) {
+                playSound('correct');
+                coins += 10;
+                updateStats();
+
+                btnElement.classList.remove('bg-slate-900/60', 'border-slate-700');
+                btnElement.classList.add('bg-emerald-500/20', 'border-emerald-500', 'text-emerald-300');
+
+                feedbackBox.className = "mt-6 p-4 rounded-xl border bg-emerald-950/40 border-emerald-500/40 text-emerald-200 flex flex-col space-y-2";
+                feedbackTitle.innerHTML = `<i class="fas fa-check-circle text-emerald-400 text-lg"></i> <span>Jawaban Tepat! (+10 Koin)</span>`;
+            } else {
+                playSound('wrong');
+                lives -= 1;
+                updateStats();
+
+                btnElement.classList.remove('bg-slate-900/60', 'border-slate-700');
+                btnElement.classList.add('bg-red-500/20', 'border-red-500', 'text-red-300');
+
+                // Highlight correct button
+                optionsButtons[q.correct].classList.add('bg-emerald-500/20', 'border-emerald-500', 'text-emerald-300');
+
+                feedbackBox.className = "mt-6 p-4 rounded-xl border bg-red-950/40 border-red-500/40 text-red-200 flex flex-col space-y-2";
+                feedbackTitle.innerHTML = `<i class="fas fa-times-circle text-red-400 text-lg"></i> <span>Kurang Tepat! (-1 Nyawa)</span>`;
+            }
+
+            feedbackText.innerText = q.explanation;
+            feedbackBox.classList.remove('hidden');
+
+            if (lives <= 0) {
+                document.getElementById('next-btn').innerText = "Lihat Hasil Akhir";
+            }
+        }
+
+        function nextQuestion() {
+            playSound('click');
+
+            if (lives <= 0) {
+                endGame(false);
+                return;
+            }
+
+            const currentZoneRange = zones[currentZoneIndex].questionsRange;
+
+            // Check if current zone finished
+            if (currentQuestionIndex < currentZoneRange[1]) {
+                currentQuestionIndex++;
+                loadQuestion(currentQuestionIndex);
+            } else {
+                // Unlock next zone if available
+                if (currentZoneIndex + 1 < zones.length) {
+                    unlockedZones[currentZoneIndex + 1] = true;
+                    currentZoneIndex++;
+                    renderMap();
+                    showScreen('screen-map');
+                } else {
+                    // All 20 questions completed
+                    endGame(true);
+                }
+            }
+        }
+
+        function endGame(isWin) {
+            showScreen('screen-result');
+
+            const resultIcon = document.getElementById('result-icon');
+            const resultTitle = document.getElementById('result-title');
+            const resultSubtitle = document.getElementById('result-subtitle');
+            const finalScore = document.getElementById('final-score');
+            const finalCorrect = document.getElementById('final-correct');
+            const badgeTitle = document.getElementById('badge-title');
+
+            const correctCount = coins / 10;
+            finalScore.innerText = coins;
+            finalCorrect.innerText = `${correctCount} / 20`;
+
+            if (isWin && correctCount >= 15) {
+                playSound('win');
+                resultIcon.innerText = `${selectedAvatar} 🏆`;
+                resultTitle.innerText = "Selamat! Pahlawan Digital Utama!";
+                resultSubtitle.innerText = "Kamu berhasil menjelajahi 5 Zona dan menjaga keamanan dunia digital!";
+                badgeTitle.innerText = "🥇 Pahlawan Digital Legend (Sangat Baik)";
+            } else if (correctCount >= 10) {
+                playSound('win');
+                resultIcon.innerText = `${selectedAvatar} 🌟`;
+                resultTitle.innerText = "Kerja Bagus, Penjelajahan Selesai!";
+                resultSubtitle.innerText = "Kamu memiliki pemahaman Literasi Digital yang baik.";
+                badgeTitle.innerText = "🥈 Penjelajahan Digital Handal (Baik)";
+            } else {
+                resultIcon.innerText = "🛡️";
+                resultTitle.innerText = "Petualangan Berakhir!";
+                resultSubtitle.innerText = "Jangan menyerah, ayo tingkatkan pemahaman literasi digitalmu lagi!";
+                badgeTitle.innerText = "🥉 Pahlawan Digital Pemula (Perlu Belajar)";
+            }
+        }
+
+        function restartGame() {
+            startGame();
+        }
+
+        // Initialize game default on window load
+        window.onload = function() {
+            // Select default avatar
+            selectAvatar('🧑‍🌾');
+        }
+    </script>
+</body>
+</html>
